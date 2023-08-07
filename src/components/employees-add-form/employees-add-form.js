@@ -1,23 +1,27 @@
-import { Component } from "react";
+import {PureComponent} from "react";
 import "./employees-add-form.css";
-import { render } from "@testing-library/react";
 
-class EmployeesAddForm extends Component {
+export class EmployeesAddForm extends PureComponent {
   constructor(props) {
     super(props);
+
     this.state = {
       name: "",
       salary: "",
     };
   }
+
   onValueChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value,
     });
   };
+
   onSubmit = (e) => {
     e.preventDefault();
+
     this.props.onAdd(this.state.name, this.state.salary);
+
     this.setState({
       name: "",
       salary: "",
@@ -55,5 +59,3 @@ class EmployeesAddForm extends Component {
     );
   }
 }
-
-export default EmployeesAddForm;

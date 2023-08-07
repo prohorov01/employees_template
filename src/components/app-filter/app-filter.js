@@ -1,27 +1,37 @@
 import "./app-filter.css";
+import {memo, useCallback, useMemo} from "react";
+import {AppFilterItem} from "../app-filter-item/app-filter-item";
 
-const AppFilter = (props) => {
-  const battonsData = [
-    { name: "all", label: "Все сотрудники" },
-    { name: "rise", label: "На повышение" },
-    { name: "moreThen1000", label: "З/П больше 1000$" },
-  ];
-  const buttons = battonsData.map(({ name, label }) => {
-    const active = props.filter === name;
-    const clazz = active ? "btn-light" : "btn-outline-light";
+const AppFilterComponent = (props) => {
+    const {value, onChange} = props;
+
+    const dictionary = useMemo(() => {
+        return [
+            {name: "all", label: "Все сотрудники"},
+            {name: "rise", label: "На повышение"},
+            {name: "moreThen1000", label: "З/П больше 1000$"},
+        ];
+    }, []);
+
+    const handleChange = useCallback((value) => {
+        onChange(value);
+    }, [onChange]);
+
     return (
-      <button
-        type="button"
-        className={`btn ${clazz}`}
-        key={name}
-        onClick={() => props.onFilterSelect(name)}
-      >
-        {label}
-      </button>
+        <div className="btn-group">
+            {dictionary.map(item => {
+                return (
+                    <AppFilterItem
+                        key={item.name}
+                        name={item.name}
+                        label={item.label}
+                        isActive={item.name === value}
+                        onChange={handleChange}
+                    />
+                )
+            })}
+        </div>
     );
-  });
-
-  return <div className="btn-group">{buttons}</div>;
 };
 
-export default AppFilter;
+export const AppFilter = memo(AppFilterComponent);

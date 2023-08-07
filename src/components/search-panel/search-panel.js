@@ -1,30 +1,20 @@
-import { Component } from "react";
-
+import {PureComponent} from "react";
 import "./search-panel.css";
 
-class SearchPanel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      term: "",
+export class SearchPanel extends PureComponent {
+    onChange = (e) => {
+        this.props.onChange(e.target.value);
     };
-  }
-  onUpdateSearch = (e) => {
-    const term = e.target.value;
-    this.setState({ term });
-    this.props.onUpdateSearch(term);
-  };
-  render() {
-    return (
-      <input
-        type="text"
-        className="form-control search-input"
-        placeholder="Найти сотрудника"
-        value={this.state.term}
-        onChange={this.onUpdateSearch}
-      />
-    );
-  }
-}
 
-export default SearchPanel;
+    render() {
+        return (
+            <input
+                type="text"
+                className="form-control search-input"
+                placeholder="Найти сотрудника"
+                value={this.props.value}
+                onChange={this.onChange}
+            />
+        );
+    }
+}
