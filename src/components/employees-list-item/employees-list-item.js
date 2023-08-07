@@ -10,6 +10,7 @@ const EmployeesListItem = (props) => {
   if (rise) {
     classNames += " like";
   }
+
   return (
     <li className={classNames}>
       <span
@@ -29,7 +30,7 @@ const EmployeesListItem = (props) => {
           type="button"
           className="btn-cookie btn-sm "
           onClick={onToggleProp}
-          data-toggle="increace"
+          data-toggle="increase"
         >
           <i className="fas fa-cookie"></i>
         </button>

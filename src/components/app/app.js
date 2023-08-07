@@ -1,4 +1,5 @@
 import { Component } from "react";
+
 import AppInfo from "../app-info/app-info";
 import SearchPanel from "../search-panel/search-panel";
 import AppFilter from "../app-filter/app-filter";
@@ -13,14 +14,15 @@ class App extends Component {
     this.state = {
       data: [
         { name: "John C.", salary: 800, increase: false, rise: true, id: 1 },
-        { name: "Alex W.", salary: 500, increase: true, rise: false, id: 2 },
-        { name: "Carl M.", salary: 900, increase: false, rise: false, id: 3 },
+        { name: "Alex M.", salary: 3000, increase: true, rise: false, id: 2 },
+        { name: "Carl W.", salary: 5000, increase: false, rise: false, id: 3 },
       ],
       term: "",
       filter: "all",
     };
     this.maxId = 4;
   }
+
   deleteItem = (id) => {
     this.setState(({ data }) => {
       return {
@@ -28,6 +30,7 @@ class App extends Component {
       };
     });
   };
+
   addItem = (name, salary) => {
     const newItem = {
       name,
@@ -36,7 +39,6 @@ class App extends Component {
       rise: false,
       id: this.maxId++,
     };
-
     this.setState(({ data }) => {
       const newArr = [...data, newItem];
       return {
@@ -60,13 +62,16 @@ class App extends Component {
     if (term.length === 0) {
       return items;
     }
+
     return items.filter((item) => {
       return item.name.indexOf(term) > -1;
     });
   };
+
   onUpdateSearch = (term) => {
     this.setState({ term });
   };
+
   filterPost = (items, filter) => {
     switch (filter) {
       case "rise":
@@ -77,6 +82,7 @@ class App extends Component {
         return items;
     }
   };
+
   onFilterSelect = (filter) => {
     this.setState({ filter });
   };
@@ -86,6 +92,7 @@ class App extends Component {
     const employees = this.state.data.length;
     const increased = this.state.data.filter((item) => item.increase).length;
     const visibleData = this.filterPost(this.searchEmp(data, term), filter);
+
     return (
       <div className="app">
         <AppInfo employees={employees} increased={increased} />
