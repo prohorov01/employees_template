@@ -1,105 +1,109 @@
-import {PureComponent} from "react";
-import {AppInfo} from "../app-info/app-info";
-import {SearchPanel} from "../search-panel/search-panel";
-import {AppFilter} from "../app-filter/app-filter";
-import {EmployeesList} from "../employees-list/employees-list";
-import {EmployeesAddForm} from "../employees-add-form/employees-add-form";
-import {getEmployeesByTerm} from "../../helpers/getEmployeesByTerm";
-import {getEmployeesByFilter} from "../../helpers/getEmployeesByFilter";
+import { PureComponent } from "react";
+import { AppInfo } from "../app-info/app-info";
+import { SearchPanel } from "../search-panel/search-panel";
+import { AppFilter } from "../app-filter/app-filter";
+import { EmployeesList } from "../employees-list/employees-list";
+import { EmployeesAddForm } from "../employees-add-form/employees-add-form";
+import { getEmployeesByTerm } from "../../helpers/getEmployeesByTerm";
+import { getEmployeesByFilter } from "../../helpers/getEmployeesByFilter";
+
 import "./app.css";
 
 class App extends PureComponent {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            data: [
-                {name: "John C.", salary: 800, increase: false, rise: true, id: 1},
-                {name: "Alex M.", salary: 3000, increase: true, rise: false, id: 2},
-                {name: "Carl W.", salary: 5000, increase: false, rise: false, id: 3},
-            ],
-            term: "",
-            filter: "all",
-        };
-
-        this.maxId = 4;
-    }
-
-    onDelete = (id) => {
-        this.setState(({data}) => {
-            return {
-                data: data.filter((item) => item.id !== id),
-            };
-        });
+    this.state = {
+      data: [
+        { name: "John C.", salary: 800, increase: false, rise: true, id: 1 },
+        { name: "Alex M.", salary: 3000, increase: true, rise: false, id: 2 },
+        { name: "Carl W.", salary: 5000, increase: false, rise: false, id: 3 },
+      ],
+      term: "",
+      filter: "all",
     };
 
-    addItem = (name, salary) => {
-        const newItem = {
-            name,
-            salary,
-            increase: false,
-            rise: false,
-            id: this.maxId++,
-        };
+    this.maxId = 4;
+  }
 
-        this.setState(({data}) => {
-            const newArr = [...data, newItem];
+  onDelete = (id) => {
+    this.setState(({ data }) => {
+      return {
+        data: data.filter((item) => item.id !== id),
+      };
+    });
+  };
 
-            return {
-                data: newArr,
-            };
-        });
+  addItem = (name, salary) => {
+    const newItem = {
+      name,
+      salary,
+      increase: false,
+      rise: false,
+      id: this.maxId++,
     };
 
-    onToggleProperty = (id, key) => {
-        this.setState(({data}) => ({
-            data: data.map((item) => {
-                if (item.id === id) {
-                    return {...item, [key]: !item[key]};
-                }
-                return item;
-            }),
-        }));
-    };
+    this.setState(({ data }) => {
+      const newArr = [...data, newItem];
 
-    getVisibleEmployee = () => {
-        const {data, term, filter} = this.state;
-        return getEmployeesByFilter(getEmployeesByTerm(data, term), filter);
-    };
+      return {
+        data: newArr,
+      };
+    });
+  };
 
-    onChangeTerm = (term) => {
-        this.setState({term});
-    };
+  onToggleProperty = (id, key) => {
+    this.setState(({ data }) => ({
+      data: data.map((item) => {
+        if (item.id === id) {
+          return { ...item, [key]: !item[key] };
+        }
+        return item;
+      }),
+    }));
+  };
 
-    onChangeFilter = (filter) => {
-        this.setState({filter});
-    };
+  getVisibleEmployee = () => {
+    const { data, term, filter } = this.state;
+    return getEmployeesByFilter(getEmployeesByTerm(data, term), filter);
+  };
 
-    render() {
-        const {data, term, filter} = this.state;
+  onChangeTerm = (term) => {
+    this.setState({ term });
+  };
 
-        const employeeCount = data.length;
-        const increasedCount = data.filter((item) => item.increase).length;
+  onChangeFilter = (filter) => {
+    this.setState({ filter });
+  };
 
-        return (
-            <div className="app">
-                <AppInfo employeeCount={employeeCount} increasedCount={increasedCount}/>
+  render() {
+    const { data, term, filter } = this.state;
 
-                <div className="search-panel">
-                    <SearchPanel value={term} onChange={this.onChangeTerm}/>
-                    <AppFilter value={filter} onChange={this.onChangeFilter}/>
-                </div>
+    const employeeCount = data.length;
+    const increasedCount = data.filter((item) => item.increase).length;
 
-                <EmployeesList
-                    list={this.getVisibleEmployee()}
-                    onDelete={this.onDelete}
-                    onToggleProperty={this.onToggleProperty}
-                />
+    return (
+      <div className="app">
+        <AppInfo
+          employeeCount={employeeCount}
+          increasedCount={increasedCount}
+        />
 
-                <EmployeesAddForm onAdd={this.addItem}/>
-            </div>
-        );
-    }
+        <div className="search-panel">
+          <SearchPanel value={term} onChange={this.onChangeTerm} />
+          <AppFilter value={filter} onChange={this.onChangeFilter} />
+        </div>
+
+        <EmployeesList
+          list={this.getVisibleEmployee()}
+          onDelete={this.onDelete}
+          onToggleProperty={this.onToggleProperty}
+        />
+
+        <EmployeesAddForm onAdd={this.addItem} />
+      </div>
+    );
+  }
 }
 
 export default App;
