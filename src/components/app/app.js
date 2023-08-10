@@ -1,4 +1,4 @@
-import { PureComponent } from "react";
+import { useState } from "react";
 import { AppInfo } from "../app-info/app-info";
 import { SearchPanel } from "../search-panel/search-panel";
 import { AppFilter } from "../app-filter/app-filter";
@@ -9,101 +9,75 @@ import { getEmployeesByFilter } from "../../helpers/getEmployeesByFilter";
 
 import "./app.css";
 
-class App extends PureComponent {
-  constructor(props) {
-    super(props);
+const App = () => {
+  const [data, setData] = useState([
+    { name: "John C.", salary: 800, increase: false, rise: true, id: 1 },
+    { name: "Alex M.", salary: 3000, increase: true, rise: false, id: 2 },
+    { name: "Carl W.", salary: 5000, increase: false, rise: false, id: 3 },
+  ]);
+  const [term, setTerm] = useState("");
+  const [filter, setFilter] = useState("all");
 
-    this.state = {
-      data: [
-        { name: "John C.", salary: 800, increase: false, rise: true, id: 1 },
-        { name: "Alex M.", salary: 3000, increase: true, rise: false, id: 2 },
-        { name: "Carl W.", salary: 5000, increase: false, rise: false, id: 3 },
-      ],
-      term: "",
-      filter: "all",
-    };
-
-    this.maxId = 4;
-  }
-
-  onDelete = (id) => {
-    this.setState(({ data }) => {
-      return {
-        data: data.filter((item) => item.id !== id),
-      };
-    });
+  const onDelete = (id) => {
+    setData(data.filter((item) => item.id !== id));
   };
 
-  addItem = (name, salary) => {
+  const addItem = (name, salary) => {
     const newItem = {
       name,
       salary,
       increase: false,
       rise: false,
-      id: this.maxId++,
+      id: data.length + 1,
     };
 
-    this.setState(({ data }) => {
-      const newArr = [...data, newItem];
-
-      return {
-        data: newArr,
-      };
-    });
+    setData([...data, newItem]);
   };
 
-  onToggleProperty = (id, key) => {
-    this.setState(({ data }) => ({
-      data: data.map((item) => {
+  const onToggleProperty = (id, key) => {
+    setData((prevData) =>
+      prevData.map((item) => {
         if (item.id === id) {
           return { ...item, [key]: !item[key] };
         }
         return item;
-      }),
-    }));
+      })
+    );
   };
 
-  getVisibleEmployee = () => {
-    const { data, term, filter } = this.state;
+  const getVisibleEmployee = () => {
     return getEmployeesByFilter(getEmployeesByTerm(data, term), filter);
   };
 
-  onChangeTerm = (term) => {
-    this.setState({ term });
+  const onChangeTerm = (term) => {
+    setTerm(term);
   };
 
-  onChangeFilter = (filter) => {
-    this.setState({ filter });
+  const onChangeFilter = (filter) => {
+    setFilter(filter);
   };
 
-  render() {
-    const { data, term, filter } = this.state;
+  const employeeCount = data.length;
+  const increasedCount = data.filter((item) => item.increase).length;
 
-    const employeeCount = data.length;
-    const increasedCount = data.filter((item) => item.increase).length;
+  return (
+    <div className="app">
+      <AppInfo employeeCount={employeeCount} increasedCount={increasedCount} />
 
-    return (
-      <div className="app">
-        <AppInfo
-          employeeCount={employeeCount}
-          increasedCount={increasedCount}
-        />
-
-        <div className="search-panel">
-          <SearchPanel value={term} onChange={this.onChangeTerm} />
-          <AppFilter value={filter} onChange={this.onChangeFilter} />
-        </div>
-
-        <EmployeesList
-          list={this.getVisibleEmployee()}
-          onDelete={this.onDelete}
-          onToggleProperty={this.onToggleProperty}
-        />
-
-        <EmployeesAddForm onAdd={this.addItem} />
+      <div className="search-panel">
+        <SearchPanel value={term} onChange={onChangeTerm} />
+        <AppFilter value={filter} onChange={onChangeFilter} />
       </div>
-    );
-  }
-}
+
+      <EmployeesList
+        list={getVisibleEmployee()}
+        onDelete={onDelete}
+        onToggleProperty={onToggleProperty}
+      />
+
+      <EmployeesAddForm onAdd={addItem} />
+    </div>
+  );
+};
 
 export default App;
